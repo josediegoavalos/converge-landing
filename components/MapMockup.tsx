@@ -1,18 +1,17 @@
 'use client'
 
-import { motion, useAnimationControls } from 'framer-motion'
-import { useEffect } from 'react'
+import { motion } from 'framer-motion'
+import { useLanguage } from '@/lib/LanguageContext'
 
 const friends = [
-  { id: 1, x: 18, y: 22, color: '#6C5CE7', label: 'Alex', delay: 0 },
-  { id: 2, x: 78, y: 18, color: '#4ECDC4', label: 'Sam', delay: 0.15 },
-  { id: 3, x: 12, y: 72, color: '#A29BFE', label: 'Jordan', delay: 0.3 },
-  { id: 4, x: 82, y: 68, color: '#81ECEC', label: 'Taylor', delay: 0.45 },
+  { id: 1, x: 18, y: 22, color: '#6C5CE7', delay: 0 },
+  { id: 2, x: 78, y: 18, color: '#4ECDC4', delay: 0.15 },
+  { id: 3, x: 12, y: 72, color: '#A29BFE', delay: 0.3 },
+  { id: 4, x: 82, y: 68, color: '#81ECEC', delay: 0.45 },
 ]
 
 const midpoint = { x: 50, y: 45 }
 
-// Faint street lines for map feel
 const streets = [
   { x1: 0, y1: 30, x2: 100, y2: 30 },
   { x1: 0, y1: 55, x2: 100, y2: 55 },
@@ -22,13 +21,15 @@ const streets = [
   { x1: 75, y1: 0, x2: 75, y2: 100 },
 ]
 
-const venues = [
-  { x: 36, y: 35, label: 'Cafe Luna' },
-  { x: 60, y: 38, label: 'The Rooftop' },
-  { x: 45, y: 58, label: 'Park Grill' },
+const venueData = [
+  { x: 36, y: 35, score: 97, color: '#6C5CE7', emoji: '☕' },
+  { x: 60, y: 38, score: 94, color: '#4ECDC4', emoji: '🍹' },
 ]
 
 export default function MapMockup() {
+  const { t } = useLanguage()
+  const m = t.mapMockup
+
   return (
     <div className="relative w-full max-w-lg mx-auto select-none">
       {/* Phone frame */}
@@ -49,21 +50,20 @@ export default function MapMockup() {
         {/* App header */}
         <div className="px-4 pb-2 flex items-center justify-between">
           <div>
-            <p className="text-xs text-text-muted">Finding midpoint for</p>
-            <p className="text-sm font-semibold text-text-primary">Weekend Crew (4)</p>
+            <p className="text-xs text-text-muted">{m.findingFor}</p>
+            <p className="text-sm font-semibold text-text-primary">{m.groupName}</p>
           </div>
           <div className="rounded-full bg-purple-muted border border-purple px-3 py-1">
-            <span className="text-xs font-medium text-purple-light">Live</span>
+            <span className="text-xs font-medium text-purple-light">{m.live}</span>
           </div>
         </div>
 
         {/* Map area */}
-        <div className="relative mx-3 rounded-2xl overflow-hidden border border-border" style={{ height: 280 }}>
-          <svg
-            viewBox="0 0 100 100"
-            className="w-full h-full"
-            style={{ background: '#12121F' }}
-          >
+        <div
+          className="relative mx-3 rounded-2xl overflow-hidden border border-border"
+          style={{ height: 280 }}
+        >
+          <svg viewBox="0 0 100 100" className="w-full h-full" style={{ background: '#12121F' }}>
             {/* Grid */}
             {streets.map((s, i) => (
               <line
@@ -79,10 +79,8 @@ export default function MapMockup() {
             {friends.map((f) => (
               <motion.line
                 key={`line-${f.id}`}
-                x1={`${f.x}%`}
-                y1={`${f.y}%`}
-                x2={`${midpoint.x}%`}
-                y2={`${midpoint.y}%`}
+                x1={`${f.x}%`} y1={`${f.y}%`}
+                x2={`${midpoint.x}%`} y2={`${midpoint.y}%`}
                 stroke={f.color}
                 strokeWidth="0.6"
                 strokeDasharray="2 2"
@@ -93,8 +91,9 @@ export default function MapMockup() {
             ))}
 
             {/* Venue dots */}
-            {venues.map((v, i) => (
-              <motion.g key={`venue-${i}`}
+            {venueData.map((v, i) => (
+              <motion.g
+                key={`venue-${i}`}
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 2.2 + i * 0.15, type: 'spring' }}
@@ -120,23 +119,15 @@ export default function MapMockup() {
 
             {/* Midpoint pulse rings */}
             <motion.circle
-              cx={`${midpoint.x}%`}
-              cy={`${midpoint.y}%`}
-              r="6"
-              fill="none"
-              stroke="#6C5CE7"
-              strokeWidth="0.5"
+              cx={`${midpoint.x}%`} cy={`${midpoint.y}%`} r="6"
+              fill="none" stroke="#6C5CE7" strokeWidth="0.5"
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: [0, 0.4, 0], scale: [0.5, 1.8, 2.5] }}
               transition={{ delay: 2, duration: 1.5, repeat: Infinity, repeatDelay: 2 }}
             />
             <motion.circle
-              cx={`${midpoint.x}%`}
-              cy={`${midpoint.y}%`}
-              r="4"
-              fill="none"
-              stroke="#6C5CE7"
-              strokeWidth="0.5"
+              cx={`${midpoint.x}%`} cy={`${midpoint.y}%`} r="4"
+              fill="none" stroke="#6C5CE7" strokeWidth="0.5"
               initial={{ opacity: 0, scale: 0.5 }}
               animate={{ opacity: [0, 0.5, 0], scale: [0.5, 1.4, 2] }}
               transition={{ delay: 2.3, duration: 1.5, repeat: Infinity, repeatDelay: 2 }}
@@ -163,7 +154,7 @@ export default function MapMockup() {
             transition={{ delay: 2.0 }}
           >
             <div className="bg-purple text-white text-[9px] font-semibold px-2 py-0.5 rounded-full whitespace-nowrap shadow-glow">
-              Midpoint
+              {m.midpoint}
             </div>
           </motion.div>
         </div>
@@ -177,15 +168,12 @@ export default function MapMockup() {
           transition={{ delay: 2.4, duration: 0.5 }}
         >
           <p className="text-[10px] text-text-muted mb-2 font-medium uppercase tracking-wider">
-            Top venues near midpoint
+            {m.topVenues}
           </p>
           <div className="space-y-2">
-            {[
-              { name: 'Cafe Luna', type: 'Coffee', score: 97, color: '#6C5CE7' },
-              { name: 'The Rooftop', type: 'Bar & Grill', score: 94, color: '#4ECDC4' },
-            ].map((v, i) => (
+            {venueData.map((v, i) => (
               <motion.div
-                key={v.name}
+                key={i}
                 className="flex items-center justify-between"
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -196,11 +184,13 @@ export default function MapMockup() {
                     className="w-6 h-6 rounded-lg flex items-center justify-center text-xs"
                     style={{ background: `${v.color}20` }}
                   >
-                    {i === 0 ? '☕' : '🍹'}
+                    {v.emoji}
                   </div>
                   <div>
-                    <p className="text-xs font-medium text-text-primary leading-none">{v.name}</p>
-                    <p className="text-[9px] text-text-muted mt-0.5">{v.type}</p>
+                    <p className="text-xs font-medium text-text-primary leading-none">
+                      {i === 0 ? 'Cafe Luna' : 'The Rooftop'}
+                    </p>
+                    <p className="text-[9px] text-text-muted mt-0.5">{m.venueTypes[i]}</p>
                   </div>
                 </div>
                 <div
@@ -215,7 +205,7 @@ export default function MapMockup() {
         </motion.div>
       </div>
 
-      {/* Decorative glow behind phone */}
+      {/* Decorative glow */}
       <div
         className="absolute inset-0 -z-10 blur-3xl opacity-30 rounded-full"
         style={{ background: 'radial-gradient(circle, #6C5CE7 0%, #4ECDC4 50%, transparent 70%)' }}

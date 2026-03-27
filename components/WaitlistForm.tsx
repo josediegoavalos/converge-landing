@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useLanguage } from '@/lib/LanguageContext'
 
 interface WaitlistFormProps {
   variant?: 'hero' | 'cta'
@@ -12,6 +13,9 @@ export default function WaitlistForm({
   variant = 'hero',
   initialCount = 1247,
 }: WaitlistFormProps) {
+  const { t } = useLanguage()
+  const f = t.waitlistForm
+
   const [email, setEmail] = useState('')
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
   const [message, setMessage] = useState('')
@@ -21,16 +25,13 @@ export default function WaitlistForm({
     fetch('/api/waitlist')
       .then((r) => r.json())
       .then((d) => {
-        if (typeof d.count === 'number' && d.count > 0) {
-          setCount(d.count)
-        }
+        if (typeof d.count === 'number' && d.count > 0) setCount(d.count)
       })
       .catch(() => {})
   }, [])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-
     const trimmed = email.trim()
     if (!trimmed) return
 
@@ -43,7 +44,6 @@ export default function WaitlistForm({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: trimmed }),
       })
-
       const data = await res.json()
 
       if (res.ok) {
@@ -56,11 +56,16 @@ export default function WaitlistForm({
         }
       } else {
         setStatus('error')
-        setMessage(data.error ?? 'Something went wrong. Please try again.')
+        // Map known API error codes to translated messages
+        if (res.status === 409) {
+          setMessage(f.errors.alreadyOnList)
+        } else {
+          setMessage(f.errors.generic)
+        }
       }
     } catch {
       setStatus('error')
-      setMessage('Network error. Please check your connection.')
+      setMessage(f.errors.network)
     }
   }
 
@@ -77,7 +82,6 @@ export default function WaitlistForm({
             exit={{ opacity: 0, scale: 0.9 }}
             className="flex flex-col items-center gap-3 py-4"
           >
-            {/* Success checkmark */}
             <motion.div
               className="w-16 h-16 rounded-full flex items-center justify-center"
               style={{ background: 'rgba(78,205,196,0.15)', border: '2px solid #4ECDC4' }}
@@ -85,14 +89,7 @@ export default function WaitlistForm({
               animate={{ scale: 1 }}
               transition={{ type: 'spring', stiffness: 300, damping: 20 }}
             >
-              <motion.svg
-                width="32"
-                height="32"
-                viewBox="0 0 32 32"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
-              >
+              <motion.svg width="32" height="32" viewBox="0 0 32 32">
                 <motion.path
                   d="M6 16 L13 23 L26 9"
                   fill="none"
@@ -108,10 +105,8 @@ export default function WaitlistForm({
             </motion.div>
 
             <div>
-              <p className="font-semibold text-text-primary text-lg">You&apos;re on the list!</p>
-              <p className="text-text-secondary text-sm mt-1">
-                We&apos;ll let you know the moment Converge launches.
-              </p>
+              <p className="font-semibold text-text-primary text-lg">{f.successTitle}</p>
+              <p className="text-text-secondary text-sm mt-1">{f.successDesc}</p>
             </div>
 
             <motion.div
@@ -126,7 +121,8 @@ export default function WaitlistForm({
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-purple" />
               </span>
               <span className="text-text-secondary">
-                <span className="text-text-primary font-semibold">{count.toLocaleString()}</span> people already waiting
+                <span className="text-text-primary font-semibold">{count.toLocaleString()}</span>{' '}
+                {f.counter}
               </span>
             </motion.div>
           </motion.div>
@@ -143,7 +139,7 @@ export default function WaitlistForm({
                   setEmail(e.target.value)
                   if (status === 'error') setStatus('idle')
                 }}
-                placeholder="your@email.com"
+                placeholder={f.placeholder}
                 required
                 disabled={status === 'loading'}
                 className={`
@@ -165,10 +161,10 @@ export default function WaitlistForm({
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                     </svg>
-                    Joining...
+                    {f.joining}
                   </span>
                 ) : (
-                  'Join the Waitlist'
+                  f.cta
                 )}
               </button>
             </form>
@@ -192,7 +188,8 @@ export default function WaitlistForm({
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-purple" />
               </span>
               <span>
-                <span className="text-text-primary font-semibold">{count.toLocaleString()}</span> people already waiting
+                <span className="text-text-primary font-semibold">{count.toLocaleString()}</span>{' '}
+                {f.counter}
               </span>
             </div>
           </motion.div>

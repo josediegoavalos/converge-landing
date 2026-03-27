@@ -1,3 +1,4 @@
+import Navbar from '@/components/Navbar'
 import Hero from '@/components/Hero'
 import ProblemSection from '@/components/ProblemSection'
 import HowItWorks from '@/components/HowItWorks'
@@ -8,14 +9,17 @@ import Footer from '@/components/Footer'
 
 export default function HomePage() {
   return (
-    <main className="relative overflow-hidden">
-      <Hero />
-      <ProblemSection />
-      <HowItWorks />
-      <Features />
-      <SocialProof />
-      <FinalCTA />
-      <Footer />
-    </main>
+    <>
+      <Navbar />
+      <main className="relative overflow-hidden">
+        <Hero />
+        <ProblemSection />
+        <HowItWorks />
+        <Features />
+        <SocialProof />
+        <FinalCTA />
+        <Footer />
+      </main>
+    </>
   )
 }

@@ -1,45 +1,19 @@
 'use client'
 
 import AnimateInView from './AnimateInView'
+import { useLanguage } from '@/lib/LanguageContext'
 
-const testimonials = [
-  {
-    quote:
-      "We've been using the beta for two months and we've gone out more times than in the past year. Converge basically saved our friendship.",
-    name: 'Daniela R.',
-    handle: '@daniela_r',
-    role: 'Med student, Lima',
-    avatar: 'D',
-    color: '#6C5CE7',
-    stars: 5,
-  },
-  {
-    quote:
-      "I'm always the one who drives the farthest in our friend group. Converge finally proved it — and now everyone takes turns picking the spot.",
-    name: 'Marcus T.',
-    handle: '@marcust',
-    role: 'Software engineer, NYC',
-    avatar: 'M',
-    color: '#4ECDC4',
-    stars: 5,
-  },
-  {
-    quote:
-      "The voting feature is genius. We used to spend 30 minutes debating over text. Now it takes like 2 minutes and nobody feels steamrolled.",
-    name: 'Priya K.',
-    handle: '@priyak',
-    role: 'Designer, San Francisco',
-    avatar: 'P',
-    color: '#A29BFE',
-    stars: 5,
-  },
+const statsMeta = [
+  { value: '2.4x', color: '#6C5CE7' },
+  { value: '87%', color: '#4ECDC4' },
+  { value: '12+', color: '#A29BFE' },
+  { value: '4.9', color: '#FDCB6E' },
 ]
 
-const stats = [
-  { value: '2.4x', label: 'More hangouts per month', color: '#6C5CE7' },
-  { value: '87%', label: 'Reduce planning time', color: '#4ECDC4' },
-  { value: '12+', label: 'Cities in beta', color: '#A29BFE' },
-  { value: '4.9', label: 'Average group satisfaction', color: '#FDCB6E' },
+const testimonialsMeta = [
+  { name: 'Daniela R.', avatar: 'D', color: '#6C5CE7', stars: 5 },
+  { name: 'Marcus T.', avatar: 'M', color: '#4ECDC4', stars: 5 },
+  { name: 'Priya K.', avatar: 'P', color: '#A29BFE', stars: 5 },
 ]
 
 function StarRating({ count }: { count: number }) {
@@ -55,6 +29,9 @@ function StarRating({ count }: { count: number }) {
 }
 
 export default function SocialProof() {
+  const { t } = useLanguage()
+  const s = t.socialProof
+
   return (
     <section
       className="section-padding relative"
@@ -68,30 +45,30 @@ export default function SocialProof() {
       <div className="max-w-7xl mx-auto">
         <AnimateInView className="text-center mb-14">
           <p className="text-sm font-semibold uppercase tracking-widest text-teal mb-3">
-            Social proof
+            {s.eyebrow}
           </p>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text-primary">
-            Built for friend groups who
+            {s.h2[0]}
             <br />
-            <span className="gradient-text">actually want to hang out.</span>
+            <span className="gradient-text">{s.h2[1]}</span>
           </h2>
           <p className="mt-4 text-text-secondary text-lg max-w-lg mx-auto">
-            Early beta testers from our waitlist are already using Converge. Here&apos;s what they say.
+            {s.subtitle}
           </p>
         </AnimateInView>
 
         {/* Stats row */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-14">
-          {stats.map((s, i) => (
-            <AnimateInView key={s.label} delay={i * 0.08}>
+          {s.stats.map((stat, i) => (
+            <AnimateInView key={i} delay={i * 0.08}>
               <div
                 className="glass-card rounded-2xl p-5 text-center"
-                style={{ borderColor: `${s.color}20` }}
+                style={{ borderColor: `${statsMeta[i].color}20` }}
               >
-                <div className="text-3xl font-extrabold mb-1" style={{ color: s.color }}>
-                  {s.value}
+                <div className="text-3xl font-extrabold mb-1" style={{ color: statsMeta[i].color }}>
+                  {statsMeta[i].value}
                 </div>
-                <div className="text-xs text-text-secondary">{s.label}</div>
+                <div className="text-xs text-text-secondary">{stat.label}</div>
               </div>
             </AnimateInView>
           ))}
@@ -99,33 +76,36 @@ export default function SocialProof() {
 
         {/* Testimonials */}
         <div className="grid md:grid-cols-3 gap-6">
-          {testimonials.map((t, i) => (
-            <AnimateInView key={t.name} delay={i * 0.12}>
-              <div
-                className="glass-card rounded-2xl p-6 h-full flex flex-col"
-                style={{ borderColor: `${t.color}20` }}
-              >
-                <StarRating count={t.stars} />
+          {s.testimonials.map((testimonial, i) => {
+            const meta = testimonialsMeta[i]
+            return (
+              <AnimateInView key={i} delay={i * 0.12}>
+                <div
+                  className="glass-card rounded-2xl p-6 h-full flex flex-col"
+                  style={{ borderColor: `${meta.color}20` }}
+                >
+                  <StarRating count={meta.stars} />
 
-                <blockquote className="mt-4 text-text-secondary text-sm leading-relaxed flex-1">
-                  &ldquo;{t.quote}&rdquo;
-                </blockquote>
+                  <blockquote className="mt-4 text-text-secondary text-sm leading-relaxed flex-1">
+                    &ldquo;{testimonial.quote}&rdquo;
+                  </blockquote>
 
-                <div className="mt-5 flex items-center gap-3">
-                  <div
-                    className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
-                    style={{ background: t.color }}
-                  >
-                    {t.avatar}
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-text-primary leading-none">{t.name}</p>
-                    <p className="text-xs text-text-muted mt-0.5">{t.role}</p>
+                  <div className="mt-5 flex items-center gap-3">
+                    <div
+                      className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
+                      style={{ background: meta.color }}
+                    >
+                      {meta.avatar}
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-text-primary leading-none">{meta.name}</p>
+                      <p className="text-xs text-text-muted mt-0.5">{testimonial.role}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </AnimateInView>
-          ))}
+              </AnimateInView>
+            )
+          })}
         </div>
       </div>
     </section>

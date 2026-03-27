@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import MapMockup from './MapMockup'
 import WaitlistForm from './WaitlistForm'
+import { useLanguage } from '@/lib/LanguageContext'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 28 },
@@ -14,8 +15,11 @@ const fadeUp = {
 }
 
 export default function Hero() {
+  const { t } = useLanguage()
+  const h = t.hero
+
   return (
-    <section className="relative min-h-screen flex items-center section-padding overflow-hidden">
+    <section className="relative min-h-screen flex items-center section-padding overflow-hidden pt-24">
       {/* Background */}
       <div className="absolute inset-0 bg-hero-glow pointer-events-none" />
       <div className="absolute inset-0 grid-pattern opacity-50 pointer-events-none" />
@@ -51,7 +55,7 @@ export default function Hero() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple opacity-75" />
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-purple" />
               </span>
-              Early access — join the waitlist
+              {h.badge}
             </motion.div>
 
             {/* Headline */}
@@ -62,11 +66,11 @@ export default function Hero() {
               animate="show"
               className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight"
             >
-              Stop arguing
+              {h.h1[0]}
               <br />
-              <span className="gradient-text">about where</span>
+              <span className="gradient-text">{h.h1[1]}</span>
               <br />
-              to meet.
+              {h.h1[2]}
             </motion.h1>
 
             <motion.p
@@ -76,7 +80,7 @@ export default function Hero() {
               animate="show"
               className="mt-5 text-lg sm:text-xl text-text-secondary leading-relaxed max-w-lg"
             >
-              Converge finds the perfect midpoint between everyone in your friend group, then recommends the best venues to actually hang out — no more 60-message group chats.
+              {h.subtitle}
             </motion.p>
 
             {/* Form */}
@@ -103,18 +107,13 @@ export default function Hero() {
                   <div
                     key={l}
                     className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white ring-2 ring-background"
-                    style={{
-                      background: `hsl(${200 + i * 40}, 70%, 55%)`,
-                    }}
+                    style={{ background: `hsl(${200 + i * 40}, 70%, 55%)` }}
                   >
                     {l}
                   </div>
                 ))}
               </div>
-              <p className="text-sm text-text-secondary">
-                Trusted by{' '}
-                <span className="text-text-primary font-medium">friend groups</span> across 12+ cities
-              </p>
+              <p className="text-sm text-text-secondary">{h.socialProof}</p>
             </motion.div>
           </div>
 

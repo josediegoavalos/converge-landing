@@ -2,16 +2,18 @@
 
 import AnimateInView from './AnimateInView'
 import WaitlistForm from './WaitlistForm'
+import { useLanguage } from '@/lib/LanguageContext'
 
 export default function FinalCTA() {
+  const { t } = useLanguage()
+  const c = t.finalCta
+
   return (
     <section className="section-padding relative overflow-hidden">
       <div
         className="absolute top-0 inset-x-0 h-px"
         style={{ background: 'linear-gradient(90deg, transparent, rgba(78,205,196,0.3), transparent)' }}
       />
-
-      {/* Background glow */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{ background: 'radial-gradient(ellipse 70% 60% at 50% 50%, rgba(108,92,231,0.15) 0%, transparent 70%)' }}
@@ -27,22 +29,22 @@ export default function FinalCTA() {
               color: '#4ECDC4',
             }}
           >
-            <span>Launching soon</span>
+            <span>{c.badge}</span>
             <span>🚀</span>
           </div>
         </AnimateInView>
 
         <AnimateInView delay={0.1}>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-text-primary leading-tight">
-            Be the first to know
+            {c.h2[0]}
             <br />
-            <span className="gradient-text">when we launch.</span>
+            <span className="gradient-text">{c.h2[1]}</span>
           </h2>
         </AnimateInView>
 
         <AnimateInView delay={0.2}>
           <p className="mt-4 text-text-secondary text-lg max-w-lg mx-auto">
-            Early access members get the app free for 3 months and help shape the features that matter most to their friend groups.
+            {c.subtitle}
           </p>
         </AnimateInView>
 
@@ -53,9 +55,7 @@ export default function FinalCTA() {
         </AnimateInView>
 
         <AnimateInView delay={0.4}>
-          <p className="mt-4 text-xs text-text-muted">
-            No spam. Unsubscribe any time. We&apos;ll only reach out when Converge is ready.
-          </p>
+          <p className="mt-4 text-xs text-text-muted">{c.disclaimer}</p>
         </AnimateInView>
       </div>
     </section>

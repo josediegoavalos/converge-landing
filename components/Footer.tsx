@@ -1,10 +1,6 @@
 'use client'
 
-const links = {
-  Product: ['Features', 'How it Works', 'Pricing', 'Changelog'],
-  Company: ['About', 'Blog', 'Careers', 'Press'],
-  Legal: ['Privacy Policy', 'Terms of Service', 'Cookie Policy'],
-}
+import { useLanguage } from '@/lib/LanguageContext'
 
 function TwitterIcon() {
   return (
@@ -33,6 +29,8 @@ function TikTokIcon() {
 }
 
 export default function Footer() {
+  const { t } = useLanguage()
+  const f = t.footer
   const year = new Date().getFullYear()
 
   return (
@@ -59,10 +57,9 @@ export default function Footer() {
             </div>
 
             <p className="text-text-secondary text-sm leading-relaxed max-w-xs">
-              The app that finds the perfect midpoint for your friend group and helps you actually hang out.
+              {f.tagline}
             </p>
 
-            {/* Social icons */}
             <div className="flex gap-3 mt-5">
               {[
                 { Icon: TwitterIcon, label: 'Twitter' },
@@ -82,7 +79,7 @@ export default function Footer() {
           </div>
 
           {/* Links */}
-          {Object.entries(links).map(([category, items]) => (
+          {Object.entries(f.links).map(([category, items]) => (
             <div key={category}>
               <p className="text-xs font-semibold uppercase tracking-widest text-text-muted mb-4">
                 {category}
@@ -106,13 +103,11 @@ export default function Footer() {
           style={{ borderColor: 'rgba(42,42,64,0.5)' }}
         >
           <p className="text-xs text-text-muted">
-            &copy; {year} Converge. All rights reserved.
+            &copy; {year} Converge. {f.rights}
           </p>
           <p className="text-xs text-text-muted">
             Made with love in Lima, Peru{' '}
-            <span role="img" aria-label="Peru flag">
-              🇵🇪
-            </span>
+            <span role="img" aria-label="Peru flag">🇵🇪</span>
           </p>
         </div>
       </div>

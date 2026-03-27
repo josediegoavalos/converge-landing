@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { LanguageProvider } from '@/lib/LanguageContext'
 import './globals.css'
 
 const inter = Inter({
@@ -28,7 +29,7 @@ export const metadata: Metadata = {
         alt: 'Converge — Meet in the Middle',
       },
     ],
-    locale: 'en_US',
+    locale: 'es_PE',
     type: 'website',
   },
   twitter: {
@@ -45,6 +46,9 @@ export const metadata: Metadata = {
     'venue finder',
     'hangout planner',
     'group meeting',
+    'punto medio',
+    'amigos',
+    'salir',
   ],
   robots: {
     index: true,
@@ -58,9 +62,9 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${inter.variable} scroll-smooth`}>
+    <html lang="es" className={`${inter.variable} scroll-smooth`}>
       <body className="bg-background text-text-primary antialiased font-sans">
-        {children}
+        <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
   )
